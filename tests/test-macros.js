@@ -24,13 +24,18 @@ function processFixture(mp, fixture_relpath, done, next) {
             done("Please provide an expected result after '---' in " +
                  fixture_relpath);
         } else {
-            mp.process(src, ctx, function (errors, result) {
-                assert.equal(result.trim(), expected.trim());
-                return next(errors, result);
-            });
+            mp.process(src, {})
+                .then(result => {
+                    assert.equal(result.trim(), expected.trim());
+                    done();
+                })
+                .catch(e => {
+                    next(e, '');
+                });
         }
     });
 }
+
 
 function makeErrorHandlingTestcase(fixtureName) {
     return function(done) {
@@ -56,19 +61,9 @@ function makeErrorHandlingTestcase(fixtureName) {
 
 describe('test-macros', function () {
     beforeEach(function (done) {
-        this.mp = new ks_macros.MacroProcessor({
-            macro_timeout: 500,
-            loader: {
-                module: __dirname + '/../lib/kumascript/test-utils',
-                class_name: 'JSONifyLoader',
-                options: { }
-            }
-        });
-        this.mp.startup(done);
-    });
-
-    afterEach(function (done) {
-        this.mp.shutdown(done);
+        this.mp = new ks_macros.MacroProcessor(
+            __dirname + '/macros'
+        );
     });
 
     it('Basic macro substitution should work', function (done) {

@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "async": "2.1.4",
-    "ejs": "2.5.7",
+    "ejs": "2.6.1",
     "express": "4.14.0",
     "fibers": "1.0.15",
     "hirelings": "0.4.3",

@@ -16,19 +16,9 @@ function getURL(uri) {
 describe('test-api', function () {
     beforeEach(function() {
         this.test_server = ks_test_utils.createTestServer();
-        this.macro_processor = new ks_macros.MacroProcessor({
-            macro_timeout: 500,
-            autorequire: {
-                "test_api": "autorequire-lib1"
-            },
-            loader: {
-                module: __dirname + '/../lib/kumascript/loaders',
-                class_name: 'FileLoader',
-                options: {
-                    root_dir: "tests/fixtures/templates",
-                }
-            }
-        });
+        this.macro_processor = new ks_macros.MacroProcessor(
+            __dirname + '/fixtures'
+        );
         this.server = new ks_server.Server({
             port: 9000,
             logging: false,
