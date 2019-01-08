@@ -38,4 +38,7 @@ shrinkwrap:
 	docker run -it -v ${MOUNT_DIR}\:${APP_DIR} -w / -u root ${IMAGE} \
 	    bash -c "npm shrinkwrap && cp npm-shrinkwrap.json ${APP_DIR}"
 
+src/parser.js: src/parser.pegjs
+	./node_modules/.bin/pegjs src/parser.pegjs
+
 .PHONY: run test test-macros lint lint-macros bash shrinkwrap

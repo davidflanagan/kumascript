@@ -11,15 +11,8 @@ The KumaScript service takes requests to render raw documents (documents that
 may contain one or more embedded macro calls), and responds with a
 fully-rendered document (a document where each of the embedded macros
 has been executed and replaced inline with its output). The
-requests can be either via GET, with the full document path in the URL like
-`GET /docs/en-US/JavaScript/Foo`, or via `POST /docs`, with the actual raw
-content of the document included in the body of the POST. Here's an overview
-of a GET request:
-
-![KumaScript overview of GET](overview.png)
-
-NOTE: If you'd like to update the diagram above, import `overview.xml` into
-https://www.draw.io, make your changes, and export `overview.png`.
+requests are via the `POST /docs` endpoint, with the raw
+content of the document to be rendered included in the body of the POST.
 
 ## Updating Macros
 
