@@ -15,7 +15,6 @@
  */
 const url = require('url');
 const request = require('request');
-const zlib = require('zlib');
 
 const cache = require('./cache.js');
 const config = require('./config.js');
@@ -261,7 +260,7 @@ const mdnPrototype = {
      *   => "hallo Welt, hallo Mitwirkender!"
      */
     replacePlaceholders(string, replacements) {
-        function replacePlaceholder(placeholder, offset, string) {
+        function replacePlaceholder(placeholder) {
             var index = placeholder.substring(1, placeholder.length - 1);
             if (!Number.isNaN(Number(index))) {
                 index--;
@@ -285,15 +284,14 @@ const mdnPrototype = {
         var url = fileObjOrUrl.url || fileObjOrUrl;
         if (!url) return '';
 
-        var result = '',
-            base_url = '';
+        let base_url = '';
 
         // New file urls include attachment host, so we don't need to
         // prepend it
         var fUrl = url.parse(url);
         if (!fUrl.host) {
-            var p = url.parse(this.__kumascript.env.url, true),
-                base_url = p.protocol + '//' + p.host;
+            var p = url.parse(this.__kumascript.env.url, true);
+            base_url = p.protocol + '//' + p.host;
         }
         url = base_url + url;
         let key = 'kuma:get_attachment_content:' + url.toLowerCase();
@@ -528,7 +526,7 @@ const wikiPrototype = {
 
     // Check if the given wiki page exists.
     // This was "temporarily" disabled 7 years ago!
-    pageExists(path) {
+    pageExists(/*path*/) {
         // Temporarily disabling this.
         // See: https://bugzilla.mozilla.org/show_bug.cgi?id=775590#c4
         return true;
@@ -568,12 +566,12 @@ const wikiPrototype = {
                 // There is probably a better way of doing this...
                 var re;
                 if (offset > 0) {
-                    for (i = 6; i >= level; i--) {
+                    for (let i = 6; i >= level; i--) {
                         re = new RegExp('(</?h)' + i + '([^>]*>)', 'gi');
                         html = html.replace(re, '$1' + (i + offset) + '$2');
                     }
                 } else if (offset < 0) {
-                    for (i = level; i <= 6; i++) {
+                    for (let i = level; i <= 6; i++) {
                         re = new RegExp('(</?h)' + i + '([^>]*>)', 'gi');
                         html = html.replace(re, '$1' + (i + offset) + '$2');
                     }
@@ -727,7 +725,7 @@ const wikiPrototype = {
             var aa = chunkify(a.title);
             var bb = chunkify(b.title);
 
-            for (x = 0; aa[x] && bb[x]; x++) {
+            for (let x = 0; aa[x] && bb[x]; x++) {
                 if (aa[x] !== bb[x]) {
                     var c = Number(aa[x]),
                         d = Number(bb[x]);
@@ -743,7 +741,7 @@ const wikiPrototype = {
             var bb = chunkify(a.title);
             var aa = chunkify(b.title);
 
-            for (x = 0; aa[x] && bb[x]; x++) {
+            for (let x = 0; aa[x] && bb[x]; x++) {
                 if (aa[x] !== bb[x]) {
                     var c = Number(aa[x]),
                         d = Number(bb[x]);
@@ -981,11 +979,20 @@ class Environment {
     // the macro arguments list to get an object specific for executing
     // one macro.
     //
-    // Note that we pass the Macros object when we create an Environment.
+    // Note that we pass the Templates object when we create an Environment.
     // this is so that macros can recursively execute other named macros
     // in the same environment.
     //
-    constructor(perPageContext, templates) {
+    // The optional third argument is for use only by tests. Setting it to
+    // true makes us not freeze the environment so that tests can stub out
+    // methods in the API like mdn.fetchJSONResources
+    //
+    constructor(perPageContext, templates, testing = false) {
+        // Freeze an object unless we're in testing mode
+        function freeze(o) {
+            return testing ? o : Object.freeze(o);
+        }
+
         /**
          * For each function-valued property in o, bind that function
          * to the specified bindings object, if there is one. Also,
@@ -1001,7 +1008,7 @@ class Environment {
          * KumaScript, where macros can use case-insensitive names of
          * objects and methods.
          *
-         * And the Object.freeze() call is a safety measure to prevent
+         * And the freeze() call is a safety measure to prevent
          * macros from modifying the execution environment.
          */
         function prepareProto(o, binding) {
@@ -1014,7 +1021,7 @@ class Environment {
                 p[key.toLowerCase()] = value;
                 p[key[0].toUpperCase() + key.slice(1)] = value;
             }
-            return Object.freeze(p);
+            return freeze(p);
         }
 
         this.templates = templates;
@@ -1041,14 +1048,14 @@ class Environment {
 
         // Now update the globals object to define each of the sub-objects
         // and the environment object as global variables
-        globals.kuma = globals.Kuma = Object.freeze(kuma);
-        globals.MDN = globals.mdn = Object.freeze(mdn);
-        globals.string = globals.String = Object.freeze(string);
-        globals.wiki = globals.Wiki = Object.freeze(wiki);
-        globals.uri = globals.Uri = Object.freeze(uri);
-        globals.web = globals.Web = Object.freeze(web);
-        globals.page = globals.Page = Object.freeze(page);
-        globals.env = globals.Env = Object.freeze(env);
+        globals.kuma = globals.Kuma = freeze(kuma);
+        globals.MDN = globals.mdn = freeze(mdn);
+        globals.string = globals.String = freeze(string);
+        globals.wiki = globals.Wiki = freeze(wiki);
+        globals.uri = globals.Uri = freeze(uri);
+        globals.web = globals.Web = freeze(web);
+        globals.page = globals.Page = freeze(page);
+        globals.env = globals.Env = freeze(env);
 
         // Macros use the global template() method to excute other
         // macros. This is the one function that we can't just
@@ -1056,7 +1063,7 @@ class Environment {
         // this.templates.
         globals.template = this._renderTemplate.bind(this);
 
-        this.prototypeEnvironment = Object.freeze(globals);
+        this.prototypeEnvironment = freeze(globals);
     }
 
     // A templating function that we define in the global environment

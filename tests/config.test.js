@@ -19,7 +19,7 @@ describe('config.js', () => {
             'https://interactive-examples.mdn.mozilla.net'
         );
         expect(config.liveSamplesURL).toBe('https://mdn.mozillademos.org');
-        expect(config.cacheMegabytes).toBe(50);
+        expect(config.cacheMegabytes).toBe(80);
         expect(config.cacheMinutes).toBe(60);
         expect(config.envHeaderPrefix).toBe('x-kumascript-env-');
     });

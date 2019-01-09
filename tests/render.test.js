@@ -112,7 +112,7 @@ describe('render() function', () => {
 
     it('handles undefined variables in macros', async () => {
         let templates = new Templates(fixture('macros'));
-        [result, errors] = await render(
+        let [result, errors] = await render(
             'foo{{ undefined() }}bar',
             templates,
             {}
@@ -127,7 +127,7 @@ describe('render() function', () => {
 
     it('handles multiple errors in one document', async () => {
         let templates = new Templates(fixture('macros'));
-        [result, errors] = await render(
+        let [result, errors] = await render(
             'foo{{nope(1)}}bar{{throw(2)}}baz{{syntax(3)}}',
             templates,
             {}
@@ -141,7 +141,7 @@ describe('render() function', () => {
 
     it('handles success plus errors in one document', async () => {
         let templates = new Templates(fixture('macros'));
-        [result, errors] = await render(
+        let [result, errors] = await render(
             'foo{{echo("!")}} bar{{ throw(1,2) }}baz{{echo("?")}}',
             templates,
             {}

@@ -7,29 +7,32 @@ APP_DIR ?= /app
 PORT ?= 9080
 DOCKER_RUN_ARGS ?= -v ${MOUNT_DIR}\:${APP_DIR} -w ${APP_DIR}
 DOCKER_PORT_ARGS ?= -p "${PORT}:${PORT}"
-TEST_RUN_ARGS ?=
-TEST_RUN_TIMEOUT ?= 10000
 
 run:
 	docker run ${DOCKER_RUN_ARGS} ${DOCKER_PORT_ARGS} ${IMAGE} node run.js
 
+local-tests:
+	npm run test
+	npm run test-macros
+	npm run lint
+	npm run lint-json
+
 test:
 	docker run ${DOCKER_RUN_ARGS} ${IMAGE} \
-	    /node_modules/.bin/mocha --timeout=${TEST_RUN_TIMEOUT} ${TEST_RUN_ARGS} tests
+	  /node_modules/.bin/jest -w1
 
 test-macros:
 	docker run ${DOCKER_RUN_ARGS} ${IMAGE} \
-	    /node_modules/.bin/mocha --timeout=${TEST_RUN_TIMEOUT} ${TEST_RUN_ARGS} tests/macros
+	  /node_modules/.bin/mocha macros/tests
 
 lint:
 	docker run ${DOCKER_RUN_ARGS} ${IMAGE} \
-	    /node_modules/.bin/jshint --show-non-errors lib tests
+	  /node_modules/.bin/eslint *.js src tests
 
-lint-macros:
+lint-json:
 	docker run ${DOCKER_RUN_ARGS} ${IMAGE} \
-	    /node_modules/.bin/ejslint "macros/**/*.ejs"
-	docker run ${DOCKER_RUN_ARGS} ${IMAGE} \
-	    /node_modules/.bin/jsonlint-cli "macros/**/*.json"
+	  /node_modules/.bin/jsonlint -q *.json `find src macros tests -name '*.json'`
+
 
 bash:
 	docker run -it ${DOCKER_RUN_ARGS} ${IMAGE} bash
@@ -41,4 +44,4 @@ shrinkwrap:
 src/parser.js: src/parser.pegjs
 	./node_modules/.bin/pegjs src/parser.pegjs
 
-.PHONY: run test test-macros lint lint-macros bash shrinkwrap
+.PHONY: run local-tests test test-macros lint lint-macros bash shrinkwrap

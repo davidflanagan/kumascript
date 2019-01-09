@@ -24,10 +24,10 @@ describe('cache() function', () => {
     it('we can bypass cache with skipCache=true', async () => {
         let compute = jest.fn(() => String(Math.random()));
 
-        let value1 = await cache('key3', compute);
+        await cache('key3', compute);
         expect(compute.mock.calls.length).toBe(1);
 
-        let value3 = await cache('key3', compute, true);
+        await cache('key3', compute, true);
         expect(compute.mock.calls.length).toBe(2);
     });
 });

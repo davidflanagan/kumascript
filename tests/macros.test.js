@@ -11,7 +11,7 @@ describe('macros/ directory', () => {
     describe('compile all macros', () => {
         let templates = new Templates(`${__dirname}/../macros`);
         let templateMap = templates.getTemplateMap();
-        macroNames = Array.from(templateMap.keys());
+        let macroNames = Array.from(templateMap.keys());
 
         it.each(macroNames)('%s', macro => {
             let filename = templateMap.get(macro);

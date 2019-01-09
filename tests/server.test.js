@@ -82,6 +82,7 @@ describe('test-server', function() {
 
     it('Fetching the root returns the homepage', async () => {
         let [response, result] = await testRequest(getURL('/'));
+        expect(response.statusCode).toBe(200);
         expect(result).toEqual(readTestFixture('homepage-expected.html'));
     });
 
@@ -94,6 +95,7 @@ describe('test-server', function() {
             url: getURL('/docs/'),
             body: input
         });
+        expect(response.statusCode).toBe(200);
         expect(result).toEqual(expected);
     });
 
@@ -151,6 +153,7 @@ describe('test-server', function() {
             headers: makeHeaders(env)
         });
 
+        expect(response.statusCode).toBe(200);
         expect(result).toEqual(expected);
     });
 
@@ -209,7 +212,7 @@ describe('test-server', function() {
 
             // Third pass, extract all kumascript error messages.
             let errors = {};
-            for (let [uid, messages] of Object.entries(logs)) {
+            for (let [_, messages] of Object.entries(logs)) {
                 for (let m of messages) {
                     if (
                         m.name == 'kumascript' &&
@@ -229,16 +232,17 @@ describe('test-server', function() {
     it('Fetching /macros returns macro details', async () => {
         let [response, result] = await testRequest(getURL('/macros'));
         let expected = readTestFixture('macros-expected.json');
+        expect(response.statusCode).toBe(200);
         expect(JSON.parse(result)).toEqual(JSON.parse(expected));
     });
 
     it('Liveness endpoint returns 204 when live', async () => {
-        let [response, result] = await testRequest(getURL('/healthz'));
+        let [response, _] = await testRequest(getURL('/healthz'));
         expect(response.statusCode).toBe(204);
     });
 
     it('Readiness endpoint returns 204 when ready', async () => {
-        let [response, result] = await testRequest(getURL('/readiness'));
+        let [response, _] = await testRequest(getURL('/readiness'));
         expect(response.statusCode).toBe(204);
     });
 
