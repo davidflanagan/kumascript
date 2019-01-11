@@ -28,7 +28,6 @@ script:
   - make lint
   - make lint-json
   - make test
-  - make test-macros
 
 notifications:
   email:

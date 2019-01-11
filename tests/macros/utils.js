@@ -1,4 +1,6 @@
-/* jshint node: true, mocha: true, esversion: 6 */
+/**
+ * @prettier
+ */
 
 // Provides utilities that as a whole constitute the macro test framework.
 
@@ -13,27 +15,49 @@ function assert(x) {
     expect(x).toBe(true);
 }
 
-assert.equal = (x, y) =>  {  expect(x).toEqual(y); };
+assert.equal = (x, y) => {
+    expect(x).toEqual(y);
+};
 
 assert.eventually = {
     async equal(x, y) {
         expect(await x).toEqual(y);
     }
-}
+};
 
-assert.include = (list, element) => { expect(list).toContain(element); };
-assert.isTrue = value => { expect(value).toEqual(true); };
-assert.isFalse = value => { expect(value).toEqual(false); };
-assert.isAbove = (value, floor) => { expect(value).toBeGreaterThan(floor); };
-assert.isArray = (value) => { expect(value).toBeInstanceOf(Array); };
-assert.isObject = (value) => { expect(value).toBeInstanceOf(Object); };
-assert.isFunction = (value) => { expect(value).toBeInstanceOf(Function); };
-assert.property = (value, prop) => { expect(value).toHaveProperty(prop);};
-assert.notProperty = (value, prop) => { expect(value).not.toHaveProperty(prop);};
-assert.sameMembers = (a1, a2) => { expect(new Set(a1)).toEqual(new Set(a2)); };
+assert.include = (list, element) => {
+    expect(list).toContain(element);
+};
+assert.isTrue = value => {
+    expect(value).toEqual(true);
+};
+assert.isFalse = value => {
+    expect(value).toEqual(false);
+};
+assert.isAbove = (value, floor) => {
+    expect(value).toBeGreaterThan(floor);
+};
+assert.isArray = value => {
+    expect(value).toBeInstanceOf(Array);
+};
+assert.isObject = value => {
+    expect(value).toBeInstanceOf(Object);
+};
+assert.isFunction = value => {
+    expect(value).toBeInstanceOf(Function);
+};
+assert.property = (value, prop) => {
+    expect(value).toHaveProperty(prop);
+};
+assert.notProperty = (value, prop) => {
+    expect(value).not.toHaveProperty(prop);
+};
+assert.sameMembers = (a1, a2) => {
+    expect(new Set(a1)).toEqual(new Set(a2));
+};
 
 function createMacroTestObject(macroName) {
-    let templates = new Templates(__dirname + "/../../macros/");
+    let templates = new Templates(__dirname + '/../../macros/');
     let pageContext = {
         locale: 'en-US',
         url: 'https://developer.mozilla.org/'
@@ -73,7 +97,7 @@ function createMacroTestObject(macroName) {
  * @param {function():void} runTests
  */
 function describeMacro(macroName, runTests) {
-    describe(`test "${macroName}"`, function () {
+    describe(`test "${macroName}"`, function() {
         beforeEach(function() {
             macro = createMacroTestObject(macroName);
         });
@@ -91,7 +115,7 @@ function describeMacro(macroName, runTests) {
  * @param {function(Macro):void} runTest
  */
 function itMacro(title, runTest) {
-    it(title, function () {
+    it(title, function() {
         // Assumes that setup returns a promise (if async) or
         // undefined (if synchronous).
         return runTest(macro);
@@ -107,7 +131,7 @@ function itMacro(title, runTest) {
  * @param {function(Macro):void} setup
  */
 function beforeEachMacro(setup) {
-    beforeEach(function () {
+    beforeEach(function() {
         // Assumes that setup returns a promise (if async) or
         // undefined (if synchronous).
         return setup(macro);
@@ -123,7 +147,7 @@ function beforeEachMacro(setup) {
  * @param {function(Macro):void} teardown
  */
 function afterEachMacro(teardown) {
-    afterEach(function () {
+    afterEach(function() {
         // Assumes that teardown returns a promise (if async) or
         // undefined (if synchronous).
         return teardown(macro);
@@ -132,5 +156,9 @@ function afterEachMacro(teardown) {
 
 // ### Exported public API
 module.exports = {
-    assert, itMacro, describeMacro, afterEachMacro, beforeEachMacro
+    assert,
+    itMacro,
+    describeMacro,
+    afterEachMacro,
+    beforeEachMacro
 };

@@ -2,14 +2,13 @@
  * @prettier
  */
 
-
 // There used to be a DekiScript-Page.ejs macro, and this test
 // tested its main functions. The features of that macro are now
 // part of ../../src/environment.js, but we're still testing them here.
 
 const fs = require('fs');
 const path = require('path');
-const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+const { assert, itMacro, describeMacro, beforeEachMacro } = require('./utils');
 
 const fixture_dir = path.resolve(__dirname, 'fixtures');
 
@@ -70,8 +69,8 @@ function getProps(items, prop_name) {
     return result;
 }
 
-describeMacro('dekiscript-page', function () {
-    itMacro('dummy', function (macro) {
+describeMacro('dekiscript-page', function() {
+    itMacro('dummy', function(macro) {
         let pkg = macro.ctx.page;
         assert.isObject(pkg);
         assert.isFunction(pkg.hasTag);
@@ -80,8 +79,8 @@ describeMacro('dekiscript-page', function () {
         assert.isFunction(pkg.subPagesFlatten);
         assert.isFunction(pkg.translations);
     });
-    describe('test "subpages"', function () {
-        beforeEachMacro(function (macro) {
+    describe('test "subpages"', function() {
+        beforeEachMacro(function(macro) {
             macro.ctx.mdn.fetchJSONResource = jest.fn(async url => {
                 if (url.endsWith('$children')) {
                     return fixtures.sp.data;
@@ -97,7 +96,7 @@ describeMacro('dekiscript-page', function () {
                 }
             });
         });
-        itMacro('One argument (non-null)', function (macro) {
+        itMacro('One argument (non-null)', function(macro) {
             return macro.ctx.page.subpages(fix_url).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 5);
@@ -107,7 +106,7 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(res[4].subpages.length, 1);
             });
         });
-        itMacro('One argument (null)', function (macro) {
+        itMacro('One argument (null)', function(macro) {
             macro.ctx.env.url = base_url + fix_url;
             return macro.ctx.page.subpages(null).then(res => {
                 assert.isArray(res);
@@ -118,13 +117,13 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(res[4].subpages.length, 1);
             });
         });
-        itMacro('Two arguments (depth=0)', function (macro) {
+        itMacro('Two arguments (depth=0)', function(macro) {
             return macro.ctx.page.subpages(fix_url, 0).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 0);
             });
         });
-        itMacro('Two arguments (depth=1)', function (macro) {
+        itMacro('Two arguments (depth=1)', function(macro) {
             return macro.ctx.page.subpages(fix_url, 1).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 5);
@@ -134,7 +133,7 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(res[4].subpages.length, 0);
             });
         });
-        itMacro('Two arguments (depth=2)', function (macro) {
+        itMacro('Two arguments (depth=2)', function(macro) {
             return macro.ctx.page.subpages(fix_url, 2).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 5);
@@ -144,7 +143,7 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(res[4].subpages.length, 1);
             });
         });
-        itMacro('Three arguments (depth=2, self=true)', function (macro) {
+        itMacro('Three arguments (depth=2, self=true)', function(macro) {
             return macro.ctx.page.subpages(fix_url, 2, true).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 1);
@@ -157,7 +156,7 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(sub[4].subpages.length, 1);
             });
         });
-        itMacro('Three arguments (depth=0, self=true)', function (macro) {
+        itMacro('Three arguments (depth=0, self=true)', function(macro) {
             return macro.ctx.page.subpages(fix_url, 0, true).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 1);
@@ -168,8 +167,8 @@ describeMacro('dekiscript-page', function () {
             });
         });
     });
-    describe('test "subpagesExpand"', function () {
-        beforeEachMacro(function (macro) {
+    describe('test "subpagesExpand"', function() {
+        beforeEachMacro(function(macro) {
             macro.ctx.mdn.fetchJSONResource = jest.fn(async url => {
                 if (url.endsWith('$children?expand')) {
                     return fixtures.spe.data;
@@ -185,7 +184,7 @@ describeMacro('dekiscript-page', function () {
                 }
             });
         });
-        itMacro('One argument (non-null)', function (macro) {
+        itMacro('One argument (non-null)', function(macro) {
             return macro.ctx.page.subpagesExpand(fix_url).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 5);
@@ -197,7 +196,7 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(res[4].subpages.length, 1);
             });
         });
-        itMacro('One argument (null)', function (macro) {
+        itMacro('One argument (null)', function(macro) {
             macro.ctx.env.url = base_url + fix_url;
             return macro.ctx.page.subpagesExpand(null).then(res => {
                 assert.isArray(res);
@@ -210,13 +209,13 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(res[4].subpages.length, 1);
             });
         });
-        itMacro('Two arguments (depth=0)', function (macro) {
+        itMacro('Two arguments (depth=0)', function(macro) {
             return macro.ctx.page.subpagesExpand(fix_url, 0).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 0);
             });
         });
-        itMacro('Two arguments (depth=1)', function (macro) {
+        itMacro('Two arguments (depth=1)', function(macro) {
             return macro.ctx.page.subpagesExpand(fix_url, 1).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 5);
@@ -228,7 +227,7 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(res[4].subpages.length, 0);
             });
         });
-        itMacro('Two arguments (depth=2)', function (macro) {
+        itMacro('Two arguments (depth=2)', function(macro) {
             return macro.ctx.page.subpagesExpand(fix_url, 2).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 5);
@@ -240,7 +239,7 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(res[4].subpages.length, 1);
             });
         });
-        itMacro('Three arguments (depth=2, self=true)', function (macro) {
+        itMacro('Three arguments (depth=2, self=true)', function(macro) {
             return macro.ctx.page.subpagesExpand(fix_url, 2, true).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 1);
@@ -255,7 +254,7 @@ describeMacro('dekiscript-page', function () {
                 assert.equal(sub[4].subpages.length, 1);
             });
         });
-        itMacro('Three arguments (depth=0, self=true)', function (macro) {
+        itMacro('Three arguments (depth=0, self=true)', function(macro) {
             return macro.ctx.page.subpagesExpand(fix_url, 0, true).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 1);
@@ -268,39 +267,49 @@ describeMacro('dekiscript-page', function () {
             });
         });
     });
-    describe('test "translations"', function () {
-        beforeEachMacro(function (macro) {
+    describe('test "translations"', function() {
+        beforeEachMacro(function(macro) {
             macro.ctx.mdn.fetchJSONResource = jest.fn(async url => {
                 if (!url || url.endsWith('junk$json')) {
                     return null;
                 }
                 if (url.endsWith('$json')) {
-                    return fixtures.trans.data
+                    return fixtures.trans.data;
                 }
             });
         });
-        itMacro('One argument (non-null)', function (macro) {
+        itMacro('One argument (non-null)', function(macro) {
             return macro.ctx.page.translations(fix_url).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 7);
-                assert.sameMembers(
-                    getProps(res, 'locale'),
-                    ['es', 'fr', 'ja', 'ko', 'pt-BR', 'ru', 'zh-CN']
-                );
+                assert.sameMembers(getProps(res, 'locale'), [
+                    'es',
+                    'fr',
+                    'ja',
+                    'ko',
+                    'pt-BR',
+                    'ru',
+                    'zh-CN'
+                ]);
             });
         });
-        itMacro('One argument (null)', function (macro) {
+        itMacro('One argument (null)', function(macro) {
             macro.ctx.env.url = base_url + fix_url;
             return macro.ctx.page.translations(null).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 7);
-                assert.sameMembers(
-                    getProps(res, 'locale'),
-                    ['es', 'fr', 'ja', 'ko', 'pt-BR', 'ru', 'zh-CN']
-                );
+                assert.sameMembers(getProps(res, 'locale'), [
+                    'es',
+                    'fr',
+                    'ja',
+                    'ko',
+                    'pt-BR',
+                    'ru',
+                    'zh-CN'
+                ]);
             });
         });
-        itMacro('One argument (return null)', function (macro) {
+        itMacro('One argument (return null)', function(macro) {
             const junk_url = '/en-US/docs/junk';
             return macro.ctx.page.translations(junk_url).then(res => {
                 assert.isArray(res);

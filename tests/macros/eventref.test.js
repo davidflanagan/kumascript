@@ -1,12 +1,15 @@
 /**
  * @prettier
  */
-const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+const { assert, itMacro, describeMacro } = require('./utils');
 const jsdom = require('jsdom');
 
 function checkSidebarDom(dom, locale, expected_summary, found_one) {
     let section = dom.querySelector('section');
-    assert(section.classList.contains('Quick_links'), 'Section does not contain Quick_links class');
+    assert(
+        section.classList.contains('Quick_links'),
+        'Section does not contain Quick_links class'
+    );
 
     let summaries = dom.querySelectorAll('summary');
     assert.equal(summaries[0].textContent, expected_summary);
@@ -23,31 +26,34 @@ function checkSidebarDom(dom, locale, expected_summary, found_one) {
     }
 }
 
-describeMacro('eventref', function () {
-
-    itMacro('No output in preview', function (macro) {
+describeMacro('eventref', function() {
+    itMacro('No output in preview', function(macro) {
         macro.ctx.env.slug = '';
         macro.ctx.env.locale = 'en-US';
         return assert.eventually.equal(macro.call(), '');
     });
 
+    itMacro(
+        'Creates a sidebar for an event in one group in en-US locale',
+        function(macro) {
+            macro.ctx.env.slug = 'Web/Events/datachannel';
+            macro.ctx.env.locale = 'en-US';
+            return macro.call().then(function(result) {
+                let dom = jsdom.JSDOM.fragment(result);
+                checkSidebarDom(dom, 'en-US', 'WebRTC events', true);
+            });
+        }
+    );
 
-    itMacro('Creates a sidebar for an event in one group in en-US locale', function (macro) {
-        macro.ctx.env.slug = 'Web/Events/datachannel';
-        macro.ctx.env.locale = 'en-US';
-        return macro.call().then(function(result) {
-            let dom = jsdom.JSDOM.fragment(result);
-            checkSidebarDom(dom, 'en-US', 'WebRTC events', true);
-        });
-    });
-
-    itMacro('Creates a sidebar for an event in multiple groups in fr locale', function (macro) {
-        macro.ctx.env.slug = 'Web/Events/click';
-        macro.ctx.env.locale = 'fr';
-        return macro.call().then(function(result) {
-            let dom = jsdom.JSDOM.fragment(result);
-            checkSidebarDom(dom, 'fr', 'DOM events', false);
-        });
-    });
-
+    itMacro(
+        'Creates a sidebar for an event in multiple groups in fr locale',
+        function(macro) {
+            macro.ctx.env.slug = 'Web/Events/click';
+            macro.ctx.env.locale = 'fr';
+            return macro.call().then(function(result) {
+                let dom = jsdom.JSDOM.fragment(result);
+                checkSidebarDom(dom, 'fr', 'DOM events', false);
+            });
+        }
+    );
 });

@@ -1,7 +1,7 @@
 /**
  * @prettier
  */
-const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+const { assert, itMacro, describeMacro, beforeEachMacro } = require('./utils');
 
 var expected = `\
 <section class="Quick_links" id="Quick_Links">
@@ -44,9 +44,8 @@ var expected = `\
 
 </section>`;
 
-
-describeMacro('WebAssemblySidebar', function () {
-    beforeEachMacro(function (macro) {
+describeMacro('WebAssemblySidebar', function() {
+    beforeEachMacro(function(macro) {
         const baseURL = '/en-US/docs/Web/JavaScript/Reference/Global_Objects/';
 
         // Mock calls to template("jsxref", [partialSlug])
@@ -58,7 +57,7 @@ describeMacro('WebAssemblySidebar', function () {
         });
     });
 
-    itMacro('Generates WebAssembly Sidebar', function (macro) {
+    itMacro('Generates WebAssembly Sidebar', function(macro) {
         return assert.eventually.equal(macro.call(), expected);
     });
 });

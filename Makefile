@@ -13,17 +13,12 @@ run:
 
 local-tests:
 	npm run test
-	npm run test-macros
 	npm run lint
 	npm run lint-json
 
 test:
 	docker run ${DOCKER_RUN_ARGS} ${IMAGE} \
 	  /node_modules/.bin/jest -w1
-
-test-macros:
-	docker run ${DOCKER_RUN_ARGS} ${IMAGE} \
-	  /node_modules/.bin/mocha macros/tests
 
 lint:
 	docker run ${DOCKER_RUN_ARGS} ${IMAGE} \
