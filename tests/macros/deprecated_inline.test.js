@@ -1,14 +1,7 @@
-/* jshint node: true, mocha: true, esversion: 6 */
-
-var utils = require('./utils'),
-    chai = require('chai'),
-    chaiAsPromised = require('chai-as-promised'),
-    assert = chai.assert,
-    itMacro = utils.itMacro,
-    describeMacro = utils.describeMacro;
-
-// Let's add "eventually" to assert so we can work with promises.
-chai.use(chaiAsPromised);
+/**
+ * @prettier
+ */
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
 
 describeMacro('deprecated_inline', function () {
     itMacro('No arguments (en-US)', function (macro) {

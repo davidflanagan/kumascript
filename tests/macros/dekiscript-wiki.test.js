@@ -1,14 +1,11 @@
-/* jshint node: true, mocha: true, esversion: 6 */
-
+/**
+ * @prettier
+ */
 // There used to be a DekiScript-Wiki.ejs macro, tested by this file.
 // The functions defined by that macro have been moved to
 // ../../src/environment.js, but the tests that are still relevant remain here.
 
-const utils = require('./utils'),
-      chai = require('chai'),
-      assert = chai.assert,
-      itMacro = utils.itMacro,
-      describeMacro = utils.describeMacro;
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
 
 describeMacro('dekiscript-wiki', function () {
     itMacro('basic API', function (macro) {

@@ -1,19 +1,17 @@
-/* jshint node: true, mocha: true, esversion: 6 */
+/**
+ * @prettier
+ */
+
 
 // There used to be a DekiScript-Page.ejs macro, and this test
 // tested its main functions. The features of that macro are now
 // part of ../../src/environment.js, but we're still testing them here.
 
-const fs = require('fs'),
-      path = require('path'),
-      sinon = require('sinon'),
-      utils = require('./utils'),
-      chai = require('chai'),
-      assert = chai.assert,
-      itMacro = utils.itMacro,
-      describeMacro = utils.describeMacro,
-      beforeEachMacro = utils.beforeEachMacro,
-      fixture_dir = path.resolve(__dirname, 'fixtures');
+const fs = require('fs');
+const path = require('path');
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+
+const fixture_dir = path.resolve(__dirname, 'fixtures');
 
 // Load fixture data.
 const fixtures = {
@@ -84,16 +82,20 @@ describeMacro('dekiscript-page', function () {
     });
     describe('test "subpages"', function () {
         beforeEachMacro(function (macro) {
-            const fetch_stub = sinon.stub(),
-                  fetch_url = base_url + fix_url + '$children',
-                  fetch_url0 = fetch_url + '?depth=0',
-                  fetch_url1 = fetch_url + '?depth=1',
-                  fetch_url2 = fetch_url + '?depth=2';
-            fetch_stub.withArgs(fetch_url).returns(fixtures.sp.data);
-            fetch_stub.withArgs(fetch_url0).returns(fixtures.sp0.data);
-            fetch_stub.withArgs(fetch_url1).returns(fixtures.sp1.data);
-            fetch_stub.withArgs(fetch_url2).returns(fixtures.sp.data);
-            macro.ctx.mdn.fetchJSONResource = fetch_stub;
+            macro.ctx.mdn.fetchJSONResource = jest.fn(async url => {
+                if (url.endsWith('$children')) {
+                    return fixtures.sp.data;
+                }
+                if (url.endsWith('?depth=0')) {
+                    return fixtures.sp0.data;
+                }
+                if (url.endsWith('?depth=1')) {
+                    return fixtures.sp1.data;
+                }
+                if (url.endsWith('?depth=2')) {
+                    return fixtures.sp.data;
+                }
+            });
         });
         itMacro('One argument (non-null)', function (macro) {
             return macro.ctx.page.subpages(fix_url).then(res => {
@@ -168,16 +170,20 @@ describeMacro('dekiscript-page', function () {
     });
     describe('test "subpagesExpand"', function () {
         beforeEachMacro(function (macro) {
-            const fetch_stub = sinon.stub(),
-                  fetch_url = base_url + fix_url + '$children?expand',
-                  fetch_url0 = fetch_url + '&depth=0',
-                  fetch_url1 = fetch_url + '&depth=1',
-                  fetch_url2 = fetch_url + '&depth=2';
-            fetch_stub.withArgs(fetch_url).returns(fixtures.spe.data);
-            fetch_stub.withArgs(fetch_url0).returns(fixtures.spe0.data);
-            fetch_stub.withArgs(fetch_url1).returns(fixtures.spe1.data);
-            fetch_stub.withArgs(fetch_url2).returns(fixtures.spe.data);
-            macro.ctx.mdn.fetchJSONResource = fetch_stub;
+            macro.ctx.mdn.fetchJSONResource = jest.fn(async url => {
+                if (url.endsWith('$children?expand')) {
+                    return fixtures.spe.data;
+                }
+                if (url.endsWith('&depth=0')) {
+                    return fixtures.spe0.data;
+                }
+                if (url.endsWith('&depth=1')) {
+                    return fixtures.spe1.data;
+                }
+                if (url.endsWith('&depth=2')) {
+                    return fixtures.spe.data;
+                }
+            });
         });
         itMacro('One argument (non-null)', function (macro) {
             return macro.ctx.page.subpagesExpand(fix_url).then(res => {
@@ -264,12 +270,14 @@ describeMacro('dekiscript-page', function () {
     });
     describe('test "translations"', function () {
         beforeEachMacro(function (macro) {
-            const fetch_stub = sinon.stub(),
-                  fetch_url = base_url + fix_url + '$json',
-                  fetch_junk_url = base_url + '/en-US/docs/junk$json';
-            fetch_stub.withArgs(fetch_url).returns(fixtures.trans.data);
-            fetch_stub.withArgs(fetch_junk_url).returns(null);
-            macro.ctx.mdn.fetchJSONResource = fetch_stub;
+            macro.ctx.mdn.fetchJSONResource = jest.fn(async url => {
+                if (!url || url.endsWith('junk$json')) {
+                    return null;
+                }
+                if (url.endsWith('$json')) {
+                    return fixtures.trans.data
+                }
+            });
         });
         itMacro('One argument (non-null)', function (macro) {
             return macro.ctx.page.translations(fix_url).then(res => {
@@ -293,7 +301,7 @@ describeMacro('dekiscript-page', function () {
             });
         });
         itMacro('One argument (return null)', function (macro) {
-            const junk_url = '/en-US/docs/junk$json';
+            const junk_url = '/en-US/docs/junk';
             return macro.ctx.page.translations(junk_url).then(res => {
                 assert.isArray(res);
                 assert.equal(res.length, 0);

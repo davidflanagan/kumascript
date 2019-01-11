@@ -1,10 +1,8 @@
-/* jshint node: true, mocha: true, esversion: 6 */
+/**
+ * @prettier
+ */
 
-const utils = require('./utils'),
-      chai = require('chai'),
-      assert = chai.assert,
-      itMacro = utils.itMacro,
-      describeMacro = utils.describeMacro;
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
 
 const specStatusValues = [
     'REC',

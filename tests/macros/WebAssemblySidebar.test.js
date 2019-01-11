@@ -1,14 +1,7 @@
-/* jshint node: true, mocha: true, esversion: 6 */
-
-var sinon = require('sinon'),
-    utils = require('./utils'),
-    chai = require('chai'),
-    chaiAsPromised = require('chai-as-promised'),
-    assert = chai.assert,
-    itMacro = utils.itMacro,
-    describeMacro = utils.describeMacro,
-    beforeEachMacro = utils.beforeEachMacro;
-chai.use(chaiAsPromised);
+/**
+ * @prettier
+ */
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
 
 var expected = `\
 <section class="Quick_links" id="Quick_Links">
@@ -54,27 +47,15 @@ var expected = `\
 
 describeMacro('WebAssemblySidebar', function () {
     beforeEachMacro(function (macro) {
-        // Mock calls to template("jsxref", [partialSlug])
-        var endpoints = [
-                'WebAssembly',
-                'WebAssembly.Module',
-                'WebAssembly.Global',
-                'WebAssembly.Instance',
-                'WebAssembly.Memory',
-                'WebAssembly.Table',
-                'WebAssembly.CompileError',
-                'WebAssembly.LinkError',
-                'WebAssembly.RuntimeError'],
-            baseURL = '/en-US/docs/Web/JavaScript/Reference/Global_Objects/';
+        const baseURL = '/en-US/docs/Web/JavaScript/Reference/Global_Objects/';
 
-        macro.ctx.template = sinon.stub();
-        for (let jsSlug of endpoints) {
-            var partialSlug = jsSlug.replace('.', '/'),
-                url = baseURL + partialSlug;
-            macro.ctx.template.withArgs('jsxref', [jsSlug]).returns(
-                '<a href="' + url + '" title="Title for ' + jsSlug + '">' +
-                '<code>' + jsSlug + '</code></a>');
-        }
+        // Mock calls to template("jsxref", [partialSlug])
+        macro.ctx.template = jest.fn((macro, args) => {
+            let jsSlug = args[0];
+            let partialSlug = jsSlug.replace('.', '/');
+            let url = baseURL + partialSlug;
+            return `<a href="${url}" title="Title for ${jsSlug}"><code>${jsSlug}</code></a>`;
+        });
     });
 
     itMacro('Generates WebAssembly Sidebar', function (macro) {

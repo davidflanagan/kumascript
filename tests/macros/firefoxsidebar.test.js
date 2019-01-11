@@ -1,11 +1,8 @@
-/* jshint node: true, mocha: true, esversion: 6 */
-
-const utils = require('./utils'),
-      chai = require('chai'),
-      jsdom = require('jsdom'),
-      assert = chai.assert,
-      itMacro = utils.itMacro,
-      describeMacro = utils.describeMacro;
+/**
+ * @prettier
+ */
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+const jsdom = require('jsdom');
 
 const locales = {
   'en-US': {

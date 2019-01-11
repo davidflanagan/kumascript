@@ -1,14 +1,8 @@
-/* jshint node: true, mocha: true, esversion: 6 */
-
-const utils = require('./utils'),
-      chai = require('chai'),
-      chaiAsPromised = require('chai-as-promised'),
-      jsdom = require('jsdom'),
-      assert = chai.assert,
-      itMacro = utils.itMacro,
-      describeMacro = utils.describeMacro;
-
-chai.use(chaiAsPromised);
+/**
+ * @prettier
+ */
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+const jsdom = require('jsdom');
 
 function checkSidebarDom(dom, locale, expected_summary, found_one) {
     let section = dom.querySelector('section');

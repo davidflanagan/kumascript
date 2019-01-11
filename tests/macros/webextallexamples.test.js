@@ -1,13 +1,9 @@
-/* jshint node: true, mocha: true, esversion: 6 */
+/**
+ * @prettier
+ */
 
-const utils = require('./utils'),
-      sinon = require('sinon'),
-      chai = require('chai'),
-      jsdom = require('jsdom'),
-      assert = chai.assert,
-      itMacro = utils.itMacro,
-      beforeEachMacro = utils.beforeEachMacro,
-      describeMacro = utils.describeMacro;
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+const jsdom = require('jsdom');
 
 /*
 Locales dictionary is included for completeness,
@@ -98,8 +94,7 @@ function checkTableDom(dom, locale) {
 describeMacro('WebExtAllExamples', function () {
 
     beforeEachMacro(function (macro) {
-        macro.ctx.mdn.fetchJSONResource = sinon.stub();
-        macro.ctx.mdn.fetchJSONResource.returns(testExamplesJson);
+        macro.ctx.mdn.fetchJSONResource = jest.fn(async url => testExamplesJson);
     });
 
     itMacro('Creates an examples table for en-US', function (macro) {

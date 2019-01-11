@@ -1,19 +1,17 @@
-/* jshint node: true, mocha: true, esversion: 6 */
+/**
+ * @prettier
+ */
 
-const utils = require('./utils'),
-      chai = require('chai'),
-      jsdom = require('jsdom'),
-      assert = chai.assert,
-      itMacro = utils.itMacro,
-      describeMacro = utils.describeMacro;
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+const jsdom = require('jsdom');
 
 const locales = {
   'en-US': {
-    'Core_Tools': 'Core Tools'
+    'About_MDN': 'About MDN'
   },
   'fr': {
-    'Core_Tools': 'Outils principaux'
-  }
+    'About_MDN': 'À propos'
+  }  
 };
 
 function checkSidebarDom(dom, locale) {
@@ -21,10 +19,10 @@ function checkSidebarDom(dom, locale) {
   assert(section.classList.contains('Quick_links'), 'Section does not contain Quick_links class');
 
   let summaries = dom.querySelectorAll('summary');
-  assert.equal(summaries[0].textContent,  locales[locale].Core_Tools);
+  assert.equal(summaries[0].textContent,  locales[locale].About_MDN);
 }
 
-describeMacro('ToolsSidebar', function () {
+describeMacro('MDNSidebar', function () {
 
     itMacro('Creates a sidebar object for en-US', function (macro) {
         macro.ctx.env.locale = 'en-US';

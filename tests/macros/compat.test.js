@@ -1,23 +1,14 @@
-/* jshint node: true, mocha: true, esversion: 6 */
-
+/**
+ * @prettier
+ */
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
 const fs = require('fs'),
       path = require('path'),
-      sinon = require('sinon'),
-      utils = require('./utils'),
-      chai = require('chai'),
-      chaiAsPromised = require('chai-as-promised'),
       jsdom = require('jsdom'),
       extend = require('extend'),
-      assert = chai.assert,
-      itMacro = utils.itMacro,
-      describeMacro = utils.describeMacro,
-      beforeEachMacro = utils.beforeEachMacro,
       fixture_dir = path.resolve(__dirname, 'fixtures/compat');
 
 const { JSDOM } = jsdom;
-
-// Let's add 'eventually' to assert so we can work with promises.
-chai.use(chaiAsPromised);
 
 let fixtureCompatData = {};
 fs.readdirSync(fixture_dir).forEach(function(fn) {
@@ -29,8 +20,11 @@ fs.readdirSync(fixture_dir).forEach(function(fn) {
 describeMacro('Compat', function () {
 
     beforeEachMacro(function (macro) {
-        macro.ctx.require = sinon.stub();
+        macro.ctx.require = jest.fn(pkg => fixtureCompatData);
+
+/*        macro.ctx.require = sinon.stub();
         macro.ctx.require.withArgs('mdn-browser-compat-data').returns(fixtureCompatData);
+*/
     });
 
     itMacro('Outputs a message if there is no data for the query "foo.bar"', function (macro) {
@@ -48,9 +42,9 @@ describeMacro('Compat', function () {
             assert.include(Array.from(dom.querySelector('.bc-table').classList),
               'bc-table-web');
             assert.equal(dom.querySelector('.bc-platform-desktop').colSpan,
-              '6');
+              6);
             assert.equal(dom.querySelector('.bc-platform-mobile').colSpan,
-              '7');
+              7);
         });
     });
     itMacro('Creates correct platform and browser columns for CSS data', function (macro) {
@@ -59,9 +53,9 @@ describeMacro('Compat', function () {
             assert.include(Array.from(dom.querySelector('.bc-table').classList),
               'bc-table-web');
             assert.equal(dom.querySelector('.bc-platform-desktop').colSpan,
-              '6');
+              6);
             assert.equal(dom.querySelector('.bc-platform-mobile').colSpan,
-              '7');
+              7);
         });
     });
     itMacro('Creates correct platform and browser columns for HTML data', function (macro) {
@@ -70,9 +64,9 @@ describeMacro('Compat', function () {
             assert.include(Array.from(dom.querySelector('.bc-table').classList),
               'bc-table-web');
             assert.equal(dom.querySelector('.bc-platform-desktop').colSpan,
-              '6');
+              6);
             assert.equal(dom.querySelector('.bc-platform-mobile').colSpan,
-              '7');
+              7);
         });
     });
     itMacro('Creates correct platform and browser columns for HTTP data', function (macro) {
@@ -81,9 +75,9 @@ describeMacro('Compat', function () {
             assert.include(Array.from(dom.querySelector('.bc-table').classList),
               'bc-table-web');
             assert.equal(dom.querySelector('.bc-platform-desktop').colSpan,
-              '6');
+              6);
             assert.equal(dom.querySelector('.bc-platform-mobile').colSpan,
-              '7');
+              7);
         });
     });
     itMacro('Creates correct platform and browser columns for JavaScript data', function (macro) {
@@ -92,11 +86,11 @@ describeMacro('Compat', function () {
             assert.include(Array.from(dom.querySelector('.bc-table').classList),
               'bc-table-js');
             assert.equal(dom.querySelector('.bc-platform-desktop').colSpan,
-              '6');
+              6);
             assert.equal(dom.querySelector('.bc-platform-mobile').colSpan,
-              '7');
+              7);
             assert.equal(dom.querySelector('.bc-platform-server').colSpan,
-              '1');
+              1);
         });
     });
     itMacro('Creates correct platform and browser columns for WebExtensions data', function (macro) {
@@ -105,9 +99,9 @@ describeMacro('Compat', function () {
             assert.include(Array.from(dom.querySelector('.bc-table').classList),
               'bc-table-ext');
             assert.equal(dom.querySelector('.bc-platform-desktop').colSpan,
-              '4');
+              4);
             assert.equal(dom.querySelector('.bc-platform-mobile').colSpan,
-              '1');
+              1);
         });
     });
 

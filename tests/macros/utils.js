@@ -5,6 +5,33 @@
 const Environment = require('../../src/environment.js');
 const Templates = require('../../src/templates.js');
 
+// When we were doing mocha testing, we used this.macro to hold this.
+// But Jest doesn't use the this object, so we just store the object here.
+let macro = null;
+
+function assert(x) {
+    expect(x).toBe(true);
+}
+
+assert.equal = (x, y) =>  {  expect(x).toEqual(y); };
+
+assert.eventually = {
+    async equal(x, y) {
+        expect(await x).toEqual(y);
+    }
+}
+
+assert.include = (list, element) => { expect(list).toContain(element); };
+assert.isTrue = value => { expect(value).toEqual(true); };
+assert.isFalse = value => { expect(value).toEqual(false); };
+assert.isAbove = (value, floor) => { expect(value).toBeGreaterThan(floor); };
+assert.isArray = (value) => { expect(value).toBeInstanceOf(Array); };
+assert.isObject = (value) => { expect(value).toBeInstanceOf(Object); };
+assert.isFunction = (value) => { expect(value).toBeInstanceOf(Function); };
+assert.property = (value, prop) => { expect(value).toHaveProperty(prop);};
+assert.notProperty = (value, prop) => { expect(value).not.toHaveProperty(prop);};
+assert.sameMembers = (a1, a2) => { expect(new Set(a1)).toEqual(new Set(a2)); };
+
 function createMacroTestObject(macroName) {
     let templates = new Templates(__dirname + "/../../macros/");
     let pageContext = {
@@ -48,7 +75,7 @@ function createMacroTestObject(macroName) {
 function describeMacro(macroName, runTests) {
     describe(`test "${macroName}"`, function () {
         beforeEach(function() {
-            this.macro = createMacroTestObject(macroName);
+            macro = createMacroTestObject(macroName);
         });
         runTests();
     });
@@ -67,7 +94,7 @@ function itMacro(title, runTest) {
     it(title, function () {
         // Assumes that setup returns a promise (if async) or
         // undefined (if synchronous).
-        return runTest(this.macro);
+        return runTest(macro);
     });
 }
 
@@ -83,7 +110,7 @@ function beforeEachMacro(setup) {
     beforeEach(function () {
         // Assumes that setup returns a promise (if async) or
         // undefined (if synchronous).
-        return setup(this.macro);
+        return setup(macro);
     });
 }
 
@@ -99,14 +126,11 @@ function afterEachMacro(teardown) {
     afterEach(function () {
         // Assumes that teardown returns a promise (if async) or
         // undefined (if synchronous).
-        return teardown(this.macro);
+        return teardown(macro);
     });
 }
 
 // ### Exported public API
 module.exports = {
-    itMacro: itMacro,
-    describeMacro: describeMacro,
-    afterEachMacro: afterEachMacro,
-    beforeEachMacro: beforeEachMacro
+    assert, itMacro, describeMacro, afterEachMacro, beforeEachMacro
 };

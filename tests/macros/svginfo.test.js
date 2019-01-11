@@ -1,13 +1,8 @@
-/* jshint node: true, mocha: true, esversion: 6 */
+/**
+ * @prettier
+ */
 
-// Get necessary modules
-const chai = require('chai');
-const sinon = require('sinon');
-const chaiAsPromised = require('chai-as-promised');
-const {itMacro, describeMacro, beforeEachMacro} = require('./utils');
-
-// Set up Chai
-chai.use(chaiAsPromised);
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
 
 // Basic const
 const SVG_DATA = require('../../macros/SVGData.json');
@@ -465,20 +460,15 @@ const TEST_CASE = [{
 
 describeMacro('svginfo', () => {
     beforeEachMacro((macro) => {
-        // let's make sure we have clean calls to wiki.getPage
-        macro.ctx.wiki.getPage = sinon.stub();
-        macro.ctx.wiki.pageExists = sinon.stub();
+        macro.ctx.wiki.getPage = jest.fn(async url => {
+            for(let locale of Object.keys(MOCK_PAGES)) {
+                for(let page of Object.values(MOCK_PAGES[locale])) {
+                    if (url === page.url) {
+                        return page.data
+                    }
+                }
 
-        Object.keys(MOCK_PAGES['en-US']).forEach((key) => {
-            const {url, data} = MOCK_PAGES['en-US'][key];
-            macro.ctx.wiki.getPage.withArgs(url).returns(data);
-            macro.ctx.wiki.pageExists.withArgs(url).returns(true);
-        });
-
-        Object.keys(MOCK_PAGES['zh-CN']).forEach((key) => {
-            const {url, data} = MOCK_PAGES['zh-CN'][key];
-            macro.ctx.wiki.getPage.withArgs(url).returns(data);
-            macro.ctx.wiki.pageExists.withArgs(url).returns(true);
+            }
         });
     });
 
@@ -490,7 +480,7 @@ describeMacro('svginfo', () => {
                 });
             }
 
-            return chai.assert.eventually.equal(
+            return assert.eventually.equal(
                 macro.call(...test.input),
                 test.output
             );

@@ -1,23 +1,13 @@
-/* jshint node: true, mocha: true, esversion: 6 */
+/**
+ * @prettier
+ */
 
-var sinon = require('sinon'),
-    utils = require('./utils'),
-    chai = require('chai'),
-    chaiAsPromised = require('chai-as-promised'),
-    assert = chai.assert,
-    itMacro = utils.itMacro,
-    describeMacro = utils.describeMacro,
-    beforeEachMacro = utils.beforeEachMacro,
-    js_ref_slug = 'Web/JavaScript/Reference/',
-    js_ref_url = '/en-US/docs/' + js_ref_slug;
-chai.use(chaiAsPromised);
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+
+const js_ref_slug = 'Web/JavaScript/Reference/';
+const js_ref_url = '/en-US/docs/' + js_ref_slug;
 
 describeMacro('jsxref', function () {
-    beforeEachMacro(function (macro) {
-        // jsxref calls wiki.getPage at least twice
-        macro.ctx.wiki.getPage = sinon.stub();
-    });
-
     itMacro('One argument (simple global object)', function (macro) {
         // Suggested in macro docstring, used on:
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
@@ -31,10 +21,16 @@ describeMacro('jsxref', function () {
                      ' 1 January, 1970 UTC.'),
             expected = ('<a href="' + glob_url + '" title="' + title + '">' +
                         '<code>' + name + '</code></a>');
-        macro.ctx.wiki.getPage.withArgs(ref_url).returns({});
-        macro.ctx.wiki.getPage.withArgs(glob_url).returns({
-            slug: js_ref_slug + partial_slug,
-            summary: title
+
+        macro.ctx.wiki.getPage = jest.fn(async url => {
+            if (url === glob_url) {
+                return {
+                    slug: js_ref_slug + partial_slug,
+                    summary: title
+                };
+            } else if (url === ref_url) {
+                return {};
+            }
         });
 
         return assert.eventually.equal(macro.call(name), expected);
@@ -52,10 +48,16 @@ describeMacro('jsxref', function () {
                      ' string.'),
             expected = ('<a href="' + glob_url + '" title="' + title + '">' +
                         '<code>' + name + '</code></a>');
-        macro.ctx.wiki.getPage.withArgs(ref_url).returns({});
-        macro.ctx.wiki.getPage.withArgs(glob_url).returns({
-            slug: js_ref_slug + partial_slug,
-            summary: title
+
+        macro.ctx.wiki.getPage = jest.fn(async url => {
+            if (url === glob_url) {
+                return {
+                    slug: js_ref_slug + partial_slug,
+                    summary: title
+                };
+            } else if (url === ref_url) {
+                return {};
+            }
         });
 
         return assert.eventually.equal(macro.call(name), expected);
@@ -74,11 +76,17 @@ describeMacro('jsxref', function () {
             expected = ('<a href="' + glob_url + '" title="' + title + '">' +
                         '<code>' + name + '</code></a>');
 
-        macro.ctx.wiki.getPage.withArgs(ref_url).returns({});
-        macro.ctx.wiki.getPage.withArgs(glob_url).returns({
-            slug: js_ref_slug + partial_slug,
-            summary: title
+        macro.ctx.wiki.getPage = jest.fn(async url => {
+            if (url === glob_url) {
+                return {
+                    slug: js_ref_slug + partial_slug,
+                    summary: title
+                };
+            } else if (url === ref_url) {
+                return {};
+            }
         });
+
         return assert.eventually.equal(
             macro.call(partial_slug, name), expected);
     });
@@ -96,11 +104,17 @@ describeMacro('jsxref', function () {
                      ' function).'),
             expected = ('<a href="' + ref_url + '" title="' + title + '">' +
                         '<code>' + name + '</code></a>');
-        macro.ctx.wiki.getPage.withArgs(ref_url).returns({
-            slug: js_ref_slug + partial_slug,
-            summary: title
+
+        macro.ctx.wiki.getPage = jest.fn(async url => {
+            if (url === ref_url) {
+                return {
+                    slug: js_ref_slug + partial_slug,
+                    summary: title
+                };
+            } else if (url === glob_url) {
+                return {};
+            }
         });
-        macro.ctx.wiki.getPage.withArgs(glob_url).returns({});
 
         return assert.eventually.equal(
             macro.call(partial_slug, name), expected);
@@ -122,11 +136,17 @@ describeMacro('jsxref', function () {
                         '" title="' + title + '">' +
                         '<code>' + name + '</code></a>');
 
-        macro.ctx.wiki.getPage.withArgs(ref_url).returns({});
-        macro.ctx.wiki.getPage.withArgs(glob_url).returns({
-            slug: js_ref_slug + partial_slug,
-            summary: title
+        macro.ctx.wiki.getPage = jest.fn(async url => {
+            if (url === glob_url) {
+                return {
+                    slug: js_ref_slug + partial_slug,
+                    summary: title
+                };
+            } else if (url === ref_url) {
+                return {};
+            }
         });
+
         return assert.eventually.equal(
             macro.call(partial_slug, name, anchor), expected);
     });
@@ -151,11 +171,18 @@ describeMacro('jsxref', function () {
                         '<code>' + name + '</code></a>');
 
         macro.ctx.env.locale = 'ru';
-        macro.ctx.wiki.getPage.withArgs(ref_url).returns({});
-        macro.ctx.wiki.getPage.withArgs(glob_url).returns({
-            slug: js_ref_slug + partial_slug,
-            summary: title
+
+        macro.ctx.wiki.getPage = jest.fn(async url => {
+            if (url === glob_url) {
+                return {
+                    slug: js_ref_slug + partial_slug,
+                    summary: title
+                };
+            } else if (url === ref_url) {
+                return {};
+            }
         });
+
         return assert.eventually.equal(
             macro.call(partial_slug, name, anchor), expected);
     });
@@ -173,11 +200,17 @@ describeMacro('jsxref', function () {
             expected = ('<a href="' + ref_url + '" title="' + title + '">' +
                         name + '</a>');
 
-        macro.ctx.wiki.getPage.withArgs(ref_url).returns({
-            slug: js_ref_slug + partial_slug,
-            summary: title
+        macro.ctx.wiki.getPage = jest.fn(async url => {
+            if (url === ref_url) {
+                return {
+                    slug: js_ref_slug + partial_slug,
+                    summary: title
+                };
+            } else if (url === glob_url) {
+                return {};
+            }
         });
-        macro.ctx.wiki.getPage.withArgs(glob_url).returns({});
+
         return assert.eventually.equal(
             macro.call(partial_slug, name, "", 1), expected);
     });
@@ -201,10 +234,16 @@ describeMacro('jsxref', function () {
             expected = ('<a href="' + glob_url + 
                         '" title="' + escaped_title + '">' +
                         '<code>' + name + '</code></a>');
-        macro.ctx.wiki.getPage.withArgs(ref_url).returns({});
-        macro.ctx.wiki.getPage.withArgs(glob_url).returns({
-            slug: js_ref_slug + partial_slug,
-            summary: title
+
+        macro.ctx.wiki.getPage = jest.fn(async url => {
+            if (url === glob_url) {
+                return {
+                    slug: js_ref_slug + partial_slug,
+                    summary: title
+                };
+            } else if (url === ref_url) {
+                return {};
+            }
         });
 
         return assert.eventually.equal(
@@ -223,8 +262,8 @@ describeMacro('jsxref', function () {
                         ' written; please consider contributing!'),
             expected = ('<a href="' + glob_url + '" title="' + standard + '">' +
                         '<code>' + name + '</code></a>');
-        macro.ctx.wiki.getPage.withArgs(ref_url).returns({});
-        macro.ctx.wiki.getPage.withArgs(glob_url).returns({});
+
+        macro.ctx.wiki.getPage = jest.fn(async url => ({}));
 
         return assert.eventually.equal(macro.call(name), expected);
     });

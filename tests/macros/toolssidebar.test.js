@@ -1,18 +1,16 @@
-/* jshint node: true, mocha: true, esversion: 6 */
+/**
+ * @prettier
+ */
 
-const utils = require('./utils'),
-      chai = require('chai'),
-      jsdom = require('jsdom'),
-      assert = chai.assert,
-      itMacro = utils.itMacro,
-      describeMacro = utils.describeMacro;
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
+const jsdom = require('jsdom');
 
 const locales = {
   'en-US': {
-    'Introduction': 'Introduction'
+    'Core_Tools': 'Core Tools'
   },
-  'ja': {
-    'Introduction': 'Web のゲーム開発紹介'
+  'fr': {
+    'Core_Tools': 'Outils principaux'
   }
 };
 
@@ -21,10 +19,10 @@ function checkSidebarDom(dom, locale) {
   assert(section.classList.contains('Quick_links'), 'Section does not contain Quick_links class');
 
   let summaries = dom.querySelectorAll('summary');
-  assert.equal(summaries[0].textContent,  locales[locale].Introduction);
+  assert.equal(summaries[0].textContent,  locales[locale].Core_Tools);
 }
 
-describeMacro('GamesSidebar', function () {
+describeMacro('ToolsSidebar', function () {
 
     itMacro('Creates a sidebar object for en-US', function (macro) {
         macro.ctx.env.locale = 'en-US';
@@ -34,11 +32,11 @@ describeMacro('GamesSidebar', function () {
         });
     });
 
-    itMacro('Creates a sidebar object for ja', function (macro) {
-        macro.ctx.env.locale = 'ja';
+    itMacro('Creates a sidebar object for fr', function (macro) {
+        macro.ctx.env.locale = 'fr';
         return macro.call().then(function(result) {
             let dom = jsdom.JSDOM.fragment(result);
-            checkSidebarDom(dom, 'ja');
+            checkSidebarDom(dom, 'fr');
         });
     });
 

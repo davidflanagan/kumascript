@@ -1,13 +1,7 @@
-/* jshint node: true, mocha: true, esversion: 6 */
-
-// Get necessary modules
-const sinon = require('sinon');
-const { itMacro, describeMacro, beforeEachMacro } = require('./utils');
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-
-// Set up Chai
-chai.use(chaiAsPromised);
+/**
+ * @prettier
+ */
+const {assert, itMacro, describeMacro, beforeEachMacro} = require('./utils');
 
 // Basic const
 const CSS_BASE_SLUG = '/en-US/docs/Web/CSS';
@@ -171,17 +165,18 @@ const TEST_CASE = [{
 describeMacro('cssxref', () => {
     beforeEachMacro((macro) => {
         // let's make sure we have a clean calls to wiki.getPage
-        macro.ctx.wiki.getPage = sinon.stub();
-
-        Object.keys(MOCK_PAGES).forEach((key) => {
-            const { url, data } = MOCK_PAGES[key];
-            macro.ctx.wiki.getPage.withArgs(url).returns(data);
+        macro.ctx.wiki.getPage = jest.fn(url => {
+            for(page of Object.values(MOCK_PAGES)) {
+                if (page.url === url) {
+                    return page.data
+                }
+            }
         });
     });
 
     TEST_CASE.forEach((test) => {
         itMacro(test.title, (macro) => {
-            return chai.assert.eventually.equal(
+            return assert.eventually.equal(
                 macro.call(...test.input),
                 test.output
             );
